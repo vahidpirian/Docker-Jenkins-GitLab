@@ -14,6 +14,20 @@ services:
     networks:
       - jn-net
 
+  gitlab:
+    container_name: gitlab
+    image: 'gitlab/gitlab-ce:latest'
+    restart: unless-stopped
+    hostname: gitlab
+    ports:
+      - "8090:80"
+    volumes:
+      - "/var/gitlab/config:/etc/gitlab"
+      - "/var/gitlab/logs:/var/log/gitlab"
+      - "/var/gitlab/data:/var/opt/gitlab"
+    networks:
+      - jn-net
+
 volumes:
   jn-vol:
 
