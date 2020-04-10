@@ -1,0 +1,39 @@
+job('DSL-Maven-Java') {
+	description('This is a DSL job')
+  	
+  	scm {
+      git {
+        remote {
+        	url('http://gitlab:80/jenkins/java.git')
+        	branch('master')
+        	credentials('gitlab_vahid')
+        	}
+    	}
+	}
+  	
+  	steps {
+      	maven {
+        	mavenInstallation('Jenkins-Maven')
+            goals('-B -DskipTests clean package')
+		}
+      
+      	maven {
+        	mavenInstallation('Jenkins-Maven')
+            goals('test')
+		}
+      
+     	shell('''
+			echo "*******************"
+			echo "DEPLOY THE JAR FILE"
+			echo "*******************"
+			
+      		java -jar /var/jenkins_home/workspace/Maven-Java/target/my-app-1.0-SNAPSHOT.jar
+		 	  ''')
+    }
+  	
+  	publishers {
+        archiveArtifacts('target/*.jar')
+      	archiveJunit('target/surefire-reports/*.xml')
+      	mailer('pirianit@gmail.com', true, true)
+    }
+}
